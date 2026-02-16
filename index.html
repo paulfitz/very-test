@@ -22,15 +22,14 @@
 {% assign name = table[0] %}
 {% assign rows = table[1] %}
 {% if rows.size > 0 %}
-{% assign cols = rows.first | keys | where_exp: "k", "k != 'id'" %}
 <h2>{{ name }}</h2>
 <table>
   <thead>
-    <tr>{% for col in cols %}<th>{{ col }}</th>{% endfor %}</tr>
+    <tr>{% for pair in rows.first %}{% unless pair[0] == 'id' %}<th>{{ pair[0] }}</th>{% endunless %}{% endfor %}</tr>
   </thead>
   <tbody>
     {% for row in rows %}
-    <tr>{% for col in cols %}{% assign val = row[col] %}<td>{% if val contains '@' %}<a href="mailto:{{ val }}">{{ val }}</a>{% else %}{{ val }}{% endif %}</td>{% endfor %}</tr>
+    <tr>{% for pair in row %}{% unless pair[0] == 'id' %}{% assign val = pair[1] %}<td>{% if val contains '@' %}<a href="mailto:{{ val }}">{{ val }}</a>{% else %}{{ val }}{% endif %}</td>{% endunless %}{% endfor %}</tr>
     {% endfor %}
   </tbody>
 </table>
