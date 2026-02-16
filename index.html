@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,46 +14,27 @@
   th { font-weight: 600; border-bottom: 2px solid #333; }
   a { color: #0366d6; text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .error { color: #c00; }
 </style>
 </head>
 <body>
 <h1>Team Directory</h1>
-<div id="content"></div>
-<script>
-fetch('data.json')
-  .then(r => r.json())
-  .then(data => {
-    // Find the first table in the JSON (json-git stores {TableName: [rows...]})
-    const tables = Object.entries(data);
-    if (tables.length === 0) {
-      document.getElementById('content').innerHTML = '<p>No data.</p>';
-      return;
-    }
-    for (const [name, rows] of tables) {
-      if (rows.length === 0) continue;
-      const cols = Object.keys(rows[0]).filter(k => k !== 'id');
-      let html = `<h2>${name}</h2><table><thead><tr>`;
-      for (const col of cols) html += `<th>${col}</th>`;
-      html += '</tr></thead><tbody>';
-      for (const row of rows) {
-        html += '<tr>';
-        for (const col of cols) {
-          const val = row[col] ?? '';
-          if (typeof val === 'string' && val.includes('@'))
-            html += `<td><a href="mailto:${val}">${val}</a></td>`;
-          else
-            html += `<td>${val}</td>`;
-        }
-        html += '</tr>';
-      }
-      html += '</tbody></table>';
-      document.getElementById('content').innerHTML += html;
-    }
-  })
-  .catch(() => {
-    document.getElementById('content').innerHTML = '<p class="error">Could not load data.json</p>';
-  });
-</script>
+{% for table in site.data.data %}
+{% assign name = table[0] %}
+{% assign rows = table[1] %}
+{% if rows.size > 0 %}
+{% assign cols = rows.first | keys | where_exp: "k", "k != 'id'" %}
+<h2>{{ name }}</h2>
+<table>
+  <thead>
+    <tr>{% for col in cols %}<th>{{ col }}</th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>{% for col in cols %}{% assign val = row[col] %}<td>{% if val contains '@' %}<a href="mailto:{{ val }}">{{ val }}</a>{% else %}{{ val }}{% endif %}</td>{% endfor %}</tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endfor %}
 </body>
 </html>
