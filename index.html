@@ -12,20 +12,46 @@
   th { font-weight: 600; border-bottom: 2px solid #333; }
   a { color: #0366d6; text-decoration: none; }
   a:hover { text-decoration: underline; }
+  .error { color: #c00; }
 </style>
 </head>
 <body>
 <h1>Team Directory</h1>
-<table>
-  <thead>
-    <tr><th>Name</th><th>Role</th><th>Email</th><th>Phone</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Alice Johnson</td><td>CEO</td><td><a href="mailto:alice.johnson@example.com">alice.johnson@example.com</a></td><td>555-0101</td></tr>
-    <tr><td>Bob Smith</td><td>CTO</td><td><a href="mailto:bob.smith@example.com">bob.smith@example.com</a></td><td>555-0102</td></tr>
-    <tr><td>Charlie Brown</td><td>Lead Developer</td><td><a href="mailto:charlie.brown@example.com">charlie.brown@example.com</a></td><td>555-0103</td></tr>
-    <tr><td>Dana White</td><td>Product Manager</td><td><a href="mailto:dana.white@example.com">dana.white@example.com</a></td><td>555-0104</td></tr>
-  </tbody>
-</table>
+<div id="content"></div>
+<script>
+fetch('data.json')
+  .then(r => r.json())
+  .then(data => {
+    // Find the first table in the JSON (json-git stores {TableName: [rows...]})
+    const tables = Object.entries(data);
+    if (tables.length === 0) {
+      document.getElementById('content').innerHTML = '<p>No data.</p>';
+      return;
+    }
+    for (const [name, rows] of tables) {
+      if (rows.length === 0) continue;
+      const cols = Object.keys(rows[0]).filter(k => k !== 'id');
+      let html = `<h2>${name}</h2><table><thead><tr>`;
+      for (const col of cols) html += `<th>${col}</th>`;
+      html += '</tr></thead><tbody>';
+      for (const row of rows) {
+        html += '<tr>';
+        for (const col of cols) {
+          const val = row[col] ?? '';
+          if (typeof val === 'string' && val.includes('@'))
+            html += `<td><a href="mailto:${val}">${val}</a></td>`;
+          else
+            html += `<td>${val}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</tbody></table>';
+      document.getElementById('content').innerHTML += html;
+    }
+  })
+  .catch(() => {
+    document.getElementById('content').innerHTML = '<p class="error">Could not load data.json</p>';
+  });
+</script>
 </body>
 </html>
