@@ -1,34 +1,6 @@
 {
   "Team": [
     {
-      "id": 1,
-      "Name": "Alice Janeson",
-      "Role": "CEO",
-      "Email": "alice.johnson@example.com",
-      "Phone": "555-0101"
-    },
-    {
-      "id": 2,
-      "Name": "Bob Smith",
-      "Role": "CTO",
-      "Email": "bob.smith@example.com",
-      "Phone": "555-0102"
-    },
-    {
-      "id": 3,
-      "Name": "Charlie Brown",
-      "Role": "Lead Developer",
-      "Email": "charlie.brown@example.com",
-      "Phone": "555-0103"
-    },
-    {
-      "id": 4,
-      "Name": "Dana White",
-      "Role": "Product Manager",
-      "Email": "dana.white@example.com",
-      "Phone": "555-0104"
-    },
-    {
       "id": 5,
       "Name": "Alice Johnson",
       "Role": "CEO",
